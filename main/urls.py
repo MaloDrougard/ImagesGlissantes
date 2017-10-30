@@ -21,5 +21,5 @@ from interaction import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^interact/', views.interact ),
-
+    url(r'^split', views.split),
 ]
