@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^interact/', views.interact ),
     url(r'^split', views.split),
+    url(r'^sort', views.sort),
 ]

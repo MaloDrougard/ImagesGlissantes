@@ -21,3 +21,9 @@ def split(request):
     template = loader.get_template('split.html')
     context = {}
     return HttpResponse(template.render( context, request )  )
+
+
+def sort(request):
+    template = loader.get_template('sort.html')
+    context = {}
+    return HttpResponse(template.render(context, request))

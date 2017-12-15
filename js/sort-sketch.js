@@ -3,7 +3,7 @@ var tempPixels;   //
 var stop = false;
 
 function preload() {
-    img = loadImage("../static/small_IMG_1780.jpg");
+    img = loadImage("../static/IMG_1721.jpg");
 }
 
 function setup() {

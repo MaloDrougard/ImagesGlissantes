@@ -125,6 +125,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     os.path.join(BASE_DIR, "libs"),
     os.path.join(BASE_DIR, "js"),
+    os.path.join(BASE_DIR, "media"),
 ]
 
 
