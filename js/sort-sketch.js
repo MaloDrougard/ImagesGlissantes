@@ -1,7 +1,6 @@
-
-// save the anvas to jpg if true
-var saveOption = true;
-var fileName = "arbre-neige.jpg" ;
+// save the canvas to jpg if true
+var saveOption = false;
+var fileName = "Selection/p1.jpg";
 
 var img;
 var tempPixels;   //
@@ -13,7 +12,7 @@ var canvas;
 
 
 function preload() {
-    img = loadImage("../static/"+ fileName);
+    img = loadImage("../static/" + fileName);
 }
 
 function setup() {
@@ -21,9 +20,14 @@ function setup() {
     pixelDensity(1);
 
     console.log("width: " + $(window).width(), "height: " + $(window).height());
-    canvas = createCanvas(1200, 1200);  //$(window).width(), $(window).height() - 10);  // I dont know why we need to -10
+
+
+
+    canvas = createCanvas(img.width, img.height);  //$(window).width(), $(window).height() - 10);  // I dont know why we need to -10
 
     image(img, 0, 0, width, height);
+
+    TestDeduceLineColumn();
 
     // windows pixels
     loadPixels();
@@ -31,6 +35,7 @@ function setup() {
 
     saveCanvas(canvas, "p-" + fileName, 'jpg');
     state = 1;
+
 }
 
 // swap i and j pixel of pixels
@@ -70,61 +75,6 @@ function swap(i, j) {
 
 }
 
-function middleLineSort() {
-
-    var i;
-    var j;
-
-    for (var l = 0; l < height; l++) {
-        for (var c = 0; c < width / 2 - 1; c += 1) {
-
-            // transform line column into index
-            i = c * 4 + l * width * 4;
-            j = i + 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
-        }
-
-        for (var c = width - 1; c >= width / 2; c -= 1) {
-
-            // transform line colum into index
-            i = c * 4 + l * width * 4;
-            j = i + 4;
-            if (compareRelativeLuminance(i, j) > 0) swap(i, j);
-        }
-
-    }
-}
-
-
-function lineColumnSort() {
-
-    var i;
-    var j;
-
-    for (var l = 0; l < height; l++) {
-        for (var c = 0; c < width - 1; c += 1) {
-
-            // transform line column into index
-            i = c * 4 + l * width * 4;
-            j = i + 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
-        }
-
-    }
-
-
-    for (var c = 0; c < width; c++) {
-        for (var l = 0; l < height - 1; l += 1) {
-
-            // transform line column into index
-            i = c * 4 + l * width * 4;
-            j = c * 4 + (l + 1) * width * 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
-        }
-
-    }
-
-}
 
 // sort pixel line by line using bubble sort
 // start, end  inclusive
@@ -226,106 +176,63 @@ function compareRelativeLuminance(i, j) {
 }
 
 
-function keyPressed() {
+function keyTyped() {
 
-    stop = !stop;
+    if (key == ' ') {
+        stop = !stop;
+
+    } else if (key == 's') {
+        saveCanvas(canvas, "p-" + fileName, 'jpg');
+    }
 
 }
 
 
-function draw3by3() {
-    {
-        if (stop == false && state == 1) {
+function myColumnsSort() {
+    hasSwap = false;
+    for (var c = 0; c < width; c += 1) {
+        for (var l = 0; l + 1 < height; l += 2) {
 
-            var isFinished = true;
-            var res = true;
-
-            res = bubbleSortLines(0, width / 3 - 1, 0, height * 1 / 3 - 1);
-            isFinished = isFinished && res;
-            res = bubbleSortLines(width / 3, width * 2 / 3 - 1, 0, height * 1 / 3 - 1);
-            isFinished = isFinished && res;
-            res = bubbleSortLines(width * 2 / 3, width - 1, 0, height * 1 / 3 - 1);
-            isFinished = isFinished && res;
-
-            isFinished = isFinished && res;
-            res = bubbleSortLinesDecreasive(0, width / 3 - 1, height * 1 / 3, height * 2 / 3 - 1);
-            isFinished = isFinished && res;
-            res = bubbleSortLinesDecreasive(width / 3, width * 2 / 3 - 1, height * 1 / 3, height * 2 / 3 - 1);
-            isFinished = isFinished && res;
-            res = bubbleSortLinesDecreasive(width * 2 / 3, width - 1, height * 1 / 3, height * 2 / 3 - 1);
-            isFinished = isFinished && res;
-
-            isFinished = isFinished && res;
-            res = bubbleSortLines(0, width / 3 - 1, height * 2 / 3, height - 1);
-            isFinished = isFinished && res;
-            res = bubbleSortLines(width / 3, width * 2 / 3 - 1, height * 2 / 3, height - 1);
-            isFinished = isFinished && res;
-            res = bubbleSortLines(width * 2 / 3, width - 1, height * 2 / 3, height - 1);
-            isFinished = isFinished && res;
-
-            updatePixels();
-
-
-            if (isFinished) {
-                state = 2;
+            // transform line colum into index
+            i = c * 4 + l * width * 4;
+            j = c * 4 + (l + 1) * width * 4;
+            if (compareRelativeLuminance(i, j) < 0) {
+                swap(i, j);
+                hasSwap = true;
             }
-
-
-        } else if (stop == false && state == 2) {
-            lineColumnSort();
-        }
-
-
-    }
-
-}
-
-
-function mySort2() {
-
-    for (var c = 0; c + 1 < width; c += 2) {
-        for (var l = 0; l + 1 < height; l += 1) {
-
-            // transform line colum into index
-            i = c * 4 + l * width * 4;
-            j = i + 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
         }
     }
-    for (var c = 1; c + 1 < width; c += 2) {
-        for (var l = 0; l + 1 < height; l += 1) {
 
-            // transform line colum into index
-            i = c * 4 + l * width * 4;
-            j = i + 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
-        }
-    }
-    for (var l = 0; l + 1 < width; l += 2) {
-        for (var c = 0; c < height; c += 1) {
+    for (var c = 0; c + 1 < width; c += 1) {
+        for (var l = 1; l + 2 < height; l += 2) {
+
 
             // transform line colum into index
             i = c * 4 + l * width * 4;
             j = c * 4 + (l + 1) * width * 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
+            if (compareRelativeLuminance(i, j) < 0) {
+                swap(i, j);
+                hasSwap = true;
+
+            }
         }
     }
 
-    for (var l = 1; l + 1 < width; l += 2) {
-        for (var c = 0; c < height; c += 1) {
+    return !hasSwap;
+}
 
-            // transform line colum into index
-            i = c * 4 + l * width * 4;
-            j = c * 4 + (l + 1) * width * 4;
-            if (compareRelativeLuminance(i, j) < 0) swap(i, j);
-        }
-    }
+function myLinesColumnsSort() {
 
+    isFinished = false;
 
+    isFinished = myLineSort();
+    isFinished = isFinished & myColumnsSort();
+
+    return isFinished;
 }
 
 
-function mySort() {
+function myLineSort() {
 
     var hasSwap = false;
 
@@ -368,6 +275,56 @@ function Sort3By3() {
 
 }
 
+
+// Compute the distance between two pixels
+function Distance(i, j) {
+
+
+
+}
+
+// Deduce the Column coordinate of the pixel its the index.
+// The top left corner is the pixels index 0 and 4 array elements by pixel is used
+function DeduceColumn(pixelIdx) {
+
+    // get the index without as if one element for each pixel will be used
+    var i = (pixelIdx - (pixelIdx % 4) ) / 4;
+
+    var c = i % width ;
+    return c;
+}
+
+// Deduce the Column coordinate of the pixel its the index.
+// The top left corner is the pixels index 0 and 4 array elements by pixel is used
+function DeduceLine(pixelIdx) {
+
+    // get the index without as if one element for each pixel will be used
+    var i = (pixelIdx - (pixelIdx % 4) ) / 4;
+
+    var c = i % width ;
+    var l = (i -c) / width;
+    return l;
+}
+
+function TestDeduceLineColumn() {
+
+    var temp = 0;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+    var temp = 10;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+    var temp = 10 * 4;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+    var temp = 400 * 4 * width;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+    var temp = 400 * 4 * width + 3 * 4;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+    var temp =  4 * width * height -4 ;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+    var temp =  4 * width * height ;
+    console.log(temp + ": l=" + DeduceLine(temp) + ", c=" + DeduceColumn(temp)  );
+
+}
+
 var count = 0;
 
 function draw() {
@@ -375,16 +332,19 @@ function draw() {
 
     if (!stop) {
 
-        var isFinished = mySort();
+        var isFinished = myLinesColumnsSort();
 
-        if ( (!isFinished)  && count == 10 && saveOption == true ) {
-            saveCanvas(canvas, "p-" + fileName , 'jpg');
+        if ((!isFinished) && count == 10 && saveOption == true) {
+            saveCanvas(canvas, "p-" + fileName, 'jpg');
             count = 0;
         }
         count++;
 
 
     }
+
+    pixels[19] = 0;
+
     updatePixels();
 
 
