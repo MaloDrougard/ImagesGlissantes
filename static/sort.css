@@ -6,7 +6,9 @@
 }
 
 body{
-      width: 100vw;
-      height: 100vh;
-      background: none;
+
+      background: #000000;
+      /* To hide the scroll bar */
+      overflow:hidden;
+
 }

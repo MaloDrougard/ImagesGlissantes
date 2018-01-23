@@ -1,6 +1,10 @@
 
 * {
     background: #80007f;
+
+      /* To hide the scroll bar */
+      overflow:hidden;
+
 }
 
 #b1{

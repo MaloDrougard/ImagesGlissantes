@@ -8,5 +8,10 @@
 body{
       width: 100vw;
       height: 100vh;
-      background: #016303;
+      background: #f0c560;
+
+      /* To hide the scroll bar */
+      overflow:hidden;
+
+
 }

@@ -19,23 +19,28 @@ function setup() {
 
     pixelDensity(1);
 
-    console.log("width: " + $(window).width(), "height: " + $(window).height());
+    // remark we hide scroll bar from css
+    canvas = createCanvas( 1920  , 1080  ); //img.width, img.height);  //$(window).width(), $(window).height() - 10);  // I dont know why we need to -10
 
-
-
-    canvas = createCanvas(img.width, img.height);  //$(window).width(), $(window).height() - 10);  // I dont know why we need to -10
-
-    image(img, 0, 0, width, height);
-
-    TestDeduceLineColumn();
+    image(img, 0,0, width, height);
 
     // windows pixels
     loadPixels();
     tempPixels = new Uint8ClampedArray(pixels.length);
 
-    saveCanvas(canvas, "p-" + fileName, 'jpg');
+    if( saveOption == true ){
+        saveCanvas(canvas, "p-" + fileName, 'jpg');
+
+    }
     state = 1;
 
+
+}
+
+function printWindowInfo(){
+
+    console.log("width: " + width, "height: " + height);
+    console.log("window width: " + $(window).width() + " window height: " +  $(window).height() );
 }
 
 // swap i and j pixel of pixels
@@ -161,8 +166,8 @@ function compareRelativeLuminance(i, j) {
 
     var r = -1;
 
-    var l1 = 0.21 * pixels[i] + 0.71 * pixels[i + 1] + 0.72 * pixels[i + 2];
-    var l2 = 0.21 * pixels[j] + 0.71 * pixels[j + 1] + 0.72 * pixels[j + 2];
+    var l1 = getRelativeLuminance(i);
+    var l2 = getRelativeLuminance(j);
 
     if (l1 > l2) {
         r = -1;
@@ -176,6 +181,11 @@ function compareRelativeLuminance(i, j) {
 }
 
 
+function getRelativeLuminance(i){
+    return 0.21 * pixels[i] + 0.71 * pixels[i + 1] + 0.72 * pixels[i + 2];
+}
+
+
 function keyTyped() {
 
     if (key == ' ') {
@@ -183,6 +193,18 @@ function keyTyped() {
 
     } else if (key == 's') {
         saveCanvas(canvas, "p-" + fileName, 'jpg');
+    } else if (key == 'j'){
+
+       temp = [];
+
+       for(var i = 0; i < width * height; i++){
+
+            temp.push(i * 4);
+
+        }
+
+        SortByDistance( temp, 0);
+
     }
 
 }
@@ -231,7 +253,6 @@ function myLinesColumnsSort() {
     return isFinished;
 }
 
-
 function myLineSort() {
 
     var hasSwap = false;
@@ -265,23 +286,29 @@ function myLineSort() {
 }
 
 
-function Sort3By3() {
+// Compute the distance poser 2 between two pixels
+function DistancePower(i, j) {
 
-    for (var c = 0; i + 2 < width; i += 3) {
-        for (var l = 0; l + 2 < height; l += 3) {
+    var il = DeduceLine(i);
+    var ic = DeduceColumn(i);
 
-        }
-    }
+    var jl = DeduceLine(j);
+    var jc = DeduceColumn(j);
 
-}
-
-
-// Compute the distance between two pixels
-function Distance(i, j) {
-
+    var r = Math.pow((il - jl), 2) +  Math.pow( (ic - jc ), 2);
+    return r
 
 
 }
+
+function TestDistancePower(){
+
+    var i = 0;
+    var j = 3 * width * 4 + 4 * 4 ;
+    console.log( "DistancePower between index " + i + " and " + j + " = " + DistancePower(i,j) + " (should be 25)" );
+
+}
+
 
 // Deduce the Column coordinate of the pixel its the index.
 // The top left corner is the pixels index 0 and 4 array elements by pixel is used
@@ -294,7 +321,7 @@ function DeduceColumn(pixelIdx) {
     return c;
 }
 
-// Deduce the Column coordinate of the pixel its the index.
+// Deduce the Column coordinate of the p ixel its the index.
 // The top left corner is the pixels index 0 and 4 array elements by pixel is used
 function DeduceLine(pixelIdx) {
 
@@ -325,12 +352,93 @@ function TestDeduceLineColumn() {
 
 }
 
-var count = 0;
 
+// Sort the array of pixel index
+// The more highest luminance pixel will take the position
+// with the minimal distance relatively to the reference point (target)
+// param: candidates: the pixel indexes to be sorted
+// param: target: the reference pixel idx
+// remarque this will modify "pixels"
+function SortByDistance( candidates, target){
+
+    // save the pixels values of candidates
+    savePixels =  [];
+    candidates.forEach(function (i) {
+        savePixels.push(
+            {index: i , values:[pixels[i], pixels[i+1],pixels[i+2],pixels[i+3] ]}
+        )
+    })
+
+
+    var referenceIdx = target ; //2*width*height + width*2; // center of image normally
+
+    // Creat order list of luminance and distance
+    indexDistancePairs =  [] ;
+    indexLuminacePairs = [] ;
+    candidates.forEach( function (item) {
+
+        indexDistancePairs.push(
+            {index: item, distance: DistancePower(item, referenceIdx)} );
+
+        indexLuminacePairs.push(
+            {index: item, luminance: getRelativeLuminance(item)});
+    });
+
+    indexDistancePairs.sort(function(a, b) {
+        return a.distance - b.distance;
+    })
+
+    indexLuminacePairs.sort(function (a,b) {
+        return a.luminance - b.luminance;
+    })
+
+
+    // now the lowest luminance will take the position with the shortest distance
+
+    for(var i = 0; i < indexDistancePairs.length ; i++ ){
+
+        var dIdx = indexDistancePairs[i].index ;
+        var lIdx = indexLuminacePairs[i].index;
+
+        var found = savePixels.find( function (j) {
+            return j.index == lIdx;
+        })
+
+        pixels[dIdx] = found.values[0];
+        pixels[dIdx + 1] = found.values[0+1];
+        pixels[dIdx + 2] = found.values[0+2];
+        pixels[dIdx + 3] = found.values[0+3];
+
+
+    }
+
+
+
+
+
+/*
+
+    indexDistancePairs.forEach( function (i) {
+        console.log(i);
+    })
+
+    indexLuminacePairs.forEach( function (i) {
+        console.log(i);
+    })
+
+    savePixels.forEach(function (i) {
+        console.log(i);
+    })
+
+*/
+}
+
+
+var count = 0;
 function draw() {
 
-
     if (!stop) {
+
 
         var isFinished = myLinesColumnsSort();
 
@@ -341,9 +449,12 @@ function draw() {
         count++;
 
 
+
+
+
     }
 
-    pixels[19] = 0;
+
 
     updatePixels();
 
