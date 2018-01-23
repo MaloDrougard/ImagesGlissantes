@@ -1,0 +1,97 @@
+
+
+* {
+    background: #80007f;
+
+      /* To hide the scroll bar */
+      overflow:hidden;
+
+}
+
+
+
+#img1 {
+
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 480px;
+    height: 540px;
+}
+
+
+#img2 {
+
+    position: fixed;
+    top: 0px;
+    left: 480px;
+    width: 480px;
+    height: 540px;
+}
+
+
+#img3 {
+
+    position: fixed;
+    top: 0px;
+    left: 960px;
+    width: 480px;
+    height: 540px;
+}
+
+
+#img4 {
+
+    position: fixed;
+    top: 0px;
+    left: 1440px;
+    width: 480px;
+    height: 540px;
+}
+
+
+
+
+
+#img5 {
+
+    position: fixed;
+    top: 540px;
+    left: 0px;
+    width: 480px;
+    height: 540px;
+    transform: rotate(180deg);
+}
+
+
+#img6 {
+
+    position: fixed;
+    top: 540px;
+    left: 480px;
+    width: 480px;
+    height: 540px;
+    transform: rotate(180deg);
+}
+
+
+#img7 {
+
+    position: fixed;
+    top: 540px;
+    left: 960px;
+    width: 480px;
+    height: 540px;
+    transform: rotate(180deg);
+}
+
+
+#img8 {
+
+    position: fixed;
+    top: 540px;
+    left: 1440px;
+    width: 480px;
+    height: 540px;
+    transform: rotate(180deg);
+}

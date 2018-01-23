@@ -23,6 +23,13 @@ def split(request):
     return HttpResponse(template.render( context, request )  )
 
 
+def split2(request):
+    template = loader.get_template('split2.html')
+    context = {}
+    return HttpResponse(template.render( context, request )  )
+
+
+
 def sort(request):
     template = loader.get_template('sort.html')
     context = {}
