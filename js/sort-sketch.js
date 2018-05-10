@@ -1,11 +1,11 @@
 // save the canvas to jpg if true
 var saveOption = false;
-var fileName = "Selection/p1.jpg";
+var fileName = "p1.jpg";
 
 var img;
 var tempPixels;   //
 
-var stop = false;
+var stop = true;
 // hold the algorithm state
 var state = 0;
 var canvas;
