@@ -1,6 +1,6 @@
 // save the canvas to jpg if true
-var saveOption = false;
-var fileName = "p1.jpg";
+var saveOption = true;
+var fileName = "Abstrakt.jpg";
 
 var img;
 var tempPixels;   //
@@ -20,7 +20,7 @@ function setup() {
     pixelDensity(1);
 
     // remark we hide scroll bar from css
-    canvas = createCanvas( 1920  , 1080  ); //img.width, img.height);  //$(window).width(), $(window).height() - 10);  // I dont know why we need to -10
+    canvas = createCanvas( img.width, img.height);  //$(window).width(), $(window).height() - 10);  // I dont know why we need to -10
 
     image(img, 0,0, width, height);
 
@@ -440,17 +440,13 @@ function draw() {
     if (!stop) {
 
 
-        var isFinished = myLinesColumnsSort();
+        var isFinished = myColumnsSort();
 
         if ((!isFinished) && count == 10 && saveOption == true) {
             saveCanvas(canvas, "p-" + fileName, 'jpg');
             count = 0;
         }
         count++;
-
-
-
-
 
     }
 
