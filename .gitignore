@@ -1,5 +1,5 @@
 media/
-!media/SavedResluts
+!./media/SavedResluts/*
 results/
 .idea/
 *.pyc
