@@ -1,6 +1,6 @@
 // save the canvas to jpg if true
 var saveOption = true;
-var fileName = "Abstrakt.jpg";
+var fileName = "IMG2000.JPG";
 
 var img;
 var tempPixels;   //

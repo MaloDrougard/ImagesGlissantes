@@ -15,3 +15,11 @@
 ![](media/SavedResults/p-Abstrakt(7).jpg)
 
 
+**Run**
+
+This app is a Django app.
+To run it install Django. 
+Then:
+
+$ python manage.py runserver
+
