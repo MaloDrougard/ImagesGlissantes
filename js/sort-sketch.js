@@ -1,6 +1,6 @@
 // save the canvas to jpg if true
 var saveOption = true;
-var fileName = "IMG2000.JPG";
+var fileName = "crabe-malo-1-medium.jpg";
 
 var img;
 var tempPixels;   //
